@@ -1,0 +1,47 @@
+name: Dispatch resume and blog deployments
+
+on:
+  push:
+    branches: [main]
+    paths: ["[0-9]*. *.md"]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  resume:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Dispatch web deployment
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          CONTENT_SHA: ${{ github.sha }}
+        run: |
+          gh api --method POST "repos/$REPOSITORY/actions/workflows/deploy.yml/dispatches" \
+            -f ref=web -f "inputs[content_sha]=$CONTENT_SHA"
+          echo "Resume dispatch accepted; deployment completion is not awaited."
+
+  blog:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Dispatch blog deployment
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo "::error::Add repository secret TOKEN with Actions read/write access to the blog repository ($REPOSITORY_OWNER/ensia96.github.io)."
+            exit 1
+          fi
+          gh api --method POST "repos/$REPOSITORY_OWNER/ensia96.github.io/actions/workflows/deploy.yml/dispatches" \
+            -f ref=main
+          echo "Blog dispatch accepted; deployment completion is not awaited."

@@ -1,0 +1,107 @@
+name: Deploy resume to GitHub Pages
+
+on:
+  push:
+    branches: [web]
+  workflow_dispatch:
+    inputs:
+      content_sha:
+        description: Main content commit SHA (empty uses main)
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/web'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    defaults:
+      run:
+        shell: bash
+        working-directory: app
+    steps:
+      - name: Checkout renderer
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          path: app
+          persist-credentials: false
+
+      - name: Validate content SHA input
+        env:
+          CONTENT_SHA: ${{ inputs.content_sha }}
+        run: |
+          if [[ -n "$CONTENT_SHA" && ! "$CONTENT_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo "::error::content_sha must be a full 40-character commit SHA"
+            exit 1
+          fi
+
+      - name: Checkout main content
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ inputs.content_sha || 'main' }}
+          path: content
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify content belongs to main
+        working-directory: content
+        env:
+          CONTENT_SHA: ${{ inputs.content_sha }}
+        run: |
+          if [[ -n "$CONTENT_SHA" ]] && ! git merge-base --is-ancestor "$CONTENT_SHA" refs/remotes/origin/main; then
+            echo "::error::content_sha must be an ancestor of main in this repository"
+            exit 1
+          fi
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6.0.0
+
+      - name: Set up Node.js LTS
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "22"
+          package-manager-cache: false
+
+      - name: Enable pinned Yarn Classic
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+          test "$(yarn --version)" = "1.22.22"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build resume
+        env:
+          RESUME_CONTENT_DIR: ${{ github.workspace }}/content
+        run: yarn build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1
