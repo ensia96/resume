@@ -1,0 +1,47 @@
+---
+import PrintButton from '../components/PrintButton.astro';
+import SectionNav from '../components/SectionNav.astro';
+import '../styles/screen.css';
+import '../styles/print.css';
+interface Props {
+  sections: { id: string; title: string }[];
+  source: { mode: string; sha: string | null; dirty: boolean | null };
+}
+const { sections, source } = Astro.props;
+const title = '최호준 | 이력서';
+const description = '문제 풀이를 즐기는 프로그래머 최호준의 이력서. 경력, 교육, 행사, 대회 및 기타 경험을 소개합니다.';
+const canonical = new URL(import.meta.env.BASE_URL, Astro.site);
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="profile" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {source.sha && <meta name="resume-content-sha" content={source.sha} />}
+    <meta name="resume-content-source" content={source.mode} />
+    {source.dirty && <meta name="resume-content-dirty" content="true" />}
+  </head>
+  <body>
+    <a class="skip-link" href="#resume-content">본문으로 이동</a>
+    <div class="resume-shell">
+      <header class="page-header">
+        <div><p class="eyebrow">RESUME</p><h1>최호준 <span>이력서</span></h1></div>
+        <PrintButton />
+      </header>
+      <SectionNav sections={sections} />
+      <main id="resume-content" tabindex="-1"><slot /></main>
+      <footer class="page-footer">
+        <p>PDF 파일은 “인쇄 / PDF 저장”에서 브라우저의 “PDF로 저장”을 선택해 만들 수 있습니다.</p>
+        {source.sha && <p class="source-note">문서 출처 <code title={source.sha}>{source.sha.slice(0, 12)}</code>{source.dirty ? ' · 로컬 문서 변경 포함' : ''}</p>}
+      </footer>
+    </div>
+  </body>
+</html>

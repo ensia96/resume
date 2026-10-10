@@ -1,0 +1,14 @@
+---
+import ResumeLayout from '../layouts/ResumeLayout.astro';
+import ResumeSection from '../components/ResumeSection.astro';
+import { loadResume } from '../lib/content';
+import { renderSection } from '../lib/markdown';
+
+const { sections, source } = await loadResume();
+const rendered = await Promise.all(sections.map(async (section) => ({
+  ...section, html: await renderSection(section, import.meta.env.BASE_URL),
+})));
+---
+<ResumeLayout sections={sections} source={source}>
+  {rendered.map((section) => <ResumeSection section={section} />)}
+</ResumeLayout>

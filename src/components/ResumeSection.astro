@@ -1,0 +1,19 @@
+---
+interface Props {
+  section: { id: string; order: number; title: string; date?: string; updatedAt?: string; html: string };
+}
+const { section } = Astro.props;
+const dates = [
+  { label: '문서 기준일', value: section.date },
+  { label: '마지막 수정', value: section.updatedAt },
+].filter((item) => item.value);
+---
+<section class="resume-section" id={section.id} aria-labelledby={`${section.id}-title`}>
+  <header class="section-header">
+    <h2 id={`${section.id}-title`}><a href={`#${section.id}`}><span class="section-number" aria-hidden="true">{String(section.order).padStart(2, '0')}</span>{section.title}</a></h2>
+    {dates.length > 0 && <dl class="section-dates">
+      {dates.map(({ label, value }) => <div><dt>{label}</dt><dd><time datetime={value!.replace(' ', 'T')}>{value!.slice(0, 10).replaceAll('-', '.')}</time></dd></div>)}
+    </dl>}
+  </header>
+  <div class="prose" set:html={section.html} />
+</section>
