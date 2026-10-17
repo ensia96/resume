@@ -8,7 +8,7 @@ const { section } = Astro.props;
   <header class="section-header">
     <h2 id={`${section.id}-title`}><a href={`#${section.id}`}><span class="section-number" aria-hidden="true">{String(section.order).padStart(2, '0')}</span>{section.title}</a></h2>
     {section.date && <dl class="section-dates">
-      <div><dt>문서 기준일</dt><dd><time datetime={section.date.replace(' ', 'T')}>{section.date.slice(0, 10).replaceAll('-', '.')}</time></dd></div>
+      <div><dt>최종 수정일</dt><dd><time datetime={section.date.replace(' ', 'T')}>{section.date.slice(0, 10).replaceAll('-', '.')}</time></dd></div>
     </dl>}
   </header>
   <div class="prose" set:html={section.html} />

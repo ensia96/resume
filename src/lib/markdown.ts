@@ -101,7 +101,7 @@ function resumeMarkup(options: { id: string; title: string; base: string }) {
               className: ["table-scroll"],
               role: "region",
               tabIndex: 0,
-              ariaLabel: `${options.title} 표 (가로 스크롤 가능)`,
+              ariaLabel: `${options.title} 표`,
             },
             children: [child],
           } as Element;
