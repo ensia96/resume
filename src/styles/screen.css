@@ -50,7 +50,7 @@ h2 a { color: inherit; text-decoration: none; }
 table { border-collapse: collapse; width: 100%; font-size: .875rem; line-height: 1.65; }
 th, td { text-align: left; padding: 10px 12px; vertical-align: top; border-bottom: 1px solid var(--line); }
 th { background: #f3f6f8; font-weight: 600; }
-td:first-child, th:first-child { width: 24%; font-variant-numeric: tabular-nums; }
+td:first-child, th:first-child { width: 24%; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .page-footer { border-top: 1px solid var(--line); padding-top: 16px; margin-top: 16px; font-size: .75rem; color: var(--muted); }
 .page-footer p { margin: 4px 0; }
 .source-note code { font-size: .7rem; }
