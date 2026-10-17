@@ -12,7 +12,6 @@ export interface ResumeSection {
   title: string;
   body: string;
   date?: string;
-  updatedAt?: string;
 }
 
 export interface ContentSource {
@@ -103,11 +102,6 @@ export function parseSection(filename: string, raw: string): ResumeSection {
     date: calendarDate(
       "date" in metadata ? metadata.date : undefined,
       "date",
-      filename,
-    ),
-    updatedAt: calendarDate(
-      "updatedAt" in metadata ? metadata.updatedAt : undefined,
-      "updatedAt",
       filename,
     ),
   };
