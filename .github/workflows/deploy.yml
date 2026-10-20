@@ -82,6 +82,14 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Check Astro project
+        env:
+          RESUME_CONTENT_DIR: ${{ github.workspace }}/content
+        run: yarn run check
+
+      - name: Run tests
+        run: yarn test
+
       - name: Build resume
         env:
           RESUME_CONTENT_DIR: ${{ github.workspace }}/content
