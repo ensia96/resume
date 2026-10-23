@@ -10,24 +10,24 @@
   h1 { font-size: 23pt; }
   h1 span { font-size: 11pt; }
   .resume-section { padding: 5mm 0; scroll-margin: 0; }
-  .section-header { margin-bottom: 3mm; break-inside: avoid; break-after: avoid; }
+  .section-header { margin-bottom: 3mm; page-break-after: avoid; break-after: avoid-page; }
   h2 { font-size: 14pt; }
   .section-number { font-size: 8pt; }
   .section-dates { font-size: 7.5pt; }
-  h2, h3, h4 { break-after: avoid; }
+  h2, h3, h4 { page-break-after: avoid; break-after: avoid-page; }
   .prose h3 { font-size: 11pt; margin-bottom: 2mm; }
   .prose h4 { font-size: 10pt; margin: 3mm 0 1.5mm; }
   .prose p, .prose ul, .prose ol { margin: 2mm 0; }
-  .prose li { margin: 1mm 0; break-inside: avoid; }
+  .prose li { margin: 1mm 0; }
   .prose blockquote { font-size: 9pt; margin: 2mm 0; padding-left: 3mm; }
-  .resume-entry { break-inside: avoid-page; }
+  blockquote, figure, pre, li, tr { page-break-inside: avoid; break-inside: avoid-page; }
+  .resume-entry { page-break-inside: auto; break-inside: auto; }
   .resume-entry + .resume-entry { margin-top: 4mm; }
-  p, li { orphans: 3; widows: 3; }
+  p, li { orphans: 2; widows: 2; }
   .table-scroll { overflow: visible; max-width: none; }
   table { min-width: 0; width: 100%; table-layout: fixed; font-size: 8.5pt; line-height: 1.5; }
   th, td { padding: 2mm; overflow-wrap: anywhere; }
   thead { display: table-header-group; }
-  tr { break-inside: avoid; }
   a { color: inherit; text-decoration: none; }
   /* No appended URLs: long app-store links would overflow and alter the body. */
   main:focus { outline: none; }
