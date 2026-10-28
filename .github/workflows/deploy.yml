@@ -11,8 +11,6 @@ on:
         default: ""
         type: string
 
-permissions:
-  contents: read
 
 concurrency:
   group: pages
